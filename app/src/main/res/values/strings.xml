@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">BancoHoras</string>
+
+
+    <string name="title_section1">Hoje</string>
+    <string name="title_section2">Mês</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_new">Novo</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_delete">Remover</string>
+
+    <string name="label_foot_total">Total Executado: </string>
+    <string name="action_mode_title">Ações</string>
+</resources>

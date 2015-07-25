@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <!--<item name="android:actionBarStyle">@style/CustomActionBar</item>-->
+        <!--<item name="actionBarStyle">@style/CustomActionBar</item>-->
+        <!--<item name="android:actionBarTabTextStyle">@style/CustomTabs</item>-->
+    </style>
+
+    <style name="CustomActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@android:color/holo_blue_dark</item>
+        <item name="background">@android:color/holo_blue_dark</item>
+    </style>
+
+    <style name="CustomTabs" parent="Widget.AppCompat.ActionBar.TabText">
+        <item name="android:background">@android:color/holo_blue_dark</item>
+        <item name="background">@android:color/holo_blue_dark</item>
+    </style>
+
+</resources>
