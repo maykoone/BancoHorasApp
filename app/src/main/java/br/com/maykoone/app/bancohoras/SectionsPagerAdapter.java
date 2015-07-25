@@ -15,6 +15,8 @@ import br.com.maykoone.app.bancohoras.fragments.ListTimeRecordsFragment;
  * one of the sections/tabs/pages.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public static final int TAB_TODAY = 0;
+    public static final int TAB_MONTH = 1;
     private MainActivity mainActivity;
     private SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
@@ -39,13 +41,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        registeredFragments.remove(position);
         super.destroyItem(container, position, object);
+        registeredFragments.remove(position);
     }
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
         return 2;
     }
 
@@ -53,9 +54,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         Locale l = Locale.getDefault();
         switch (position) {
-            case 0:
+            case TAB_TODAY:
                 return mainActivity.getString(R.string.title_section1).toUpperCase(l);
-            case 1:
+            case TAB_MONTH:
                 return mainActivity.getString(R.string.title_section2).toUpperCase(l);
 
         }

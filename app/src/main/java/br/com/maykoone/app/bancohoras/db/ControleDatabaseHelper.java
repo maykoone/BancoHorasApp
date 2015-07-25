@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +54,36 @@ public class ControleDatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<RegistroPontoEntity> getAllRegistrosPonto() {
+    public List<RegistroPontoEntity> getAllRegistrosPontoForToday() {
         List<RegistroPontoEntity> result = new ArrayList<>();
 
         String query = "SELECT * FROM " + RegistroPontoType.REGISTRO_PONTO_TABLE + " WHERE DATE(" + RegistroPontoType.DATA_EVENTO + ")= " +
                 "DATE('now','localtime') ORDER BY " + RegistroPontoType.DATA_EVENTO;
-        Log.i("QUERY", query);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String dataEvento = cursor.getString(1);
+                int id = cursor.getInt(0);
+                result.add(new RegistroPontoEntity(id, dataEvento));
+            } while (cursor.moveToNext());
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
+        return result;
+    }
+
+    public List<RegistroPontoEntity> getAllRegistrosPonto() {
+        List<RegistroPontoEntity> result = new ArrayList<>();
+
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(query, null);
-//        Cursor cursor = db.query(RegistroPontoType.REGISTRO_PONTO_TABLE, null, null, null, null, null, RegistroPontoType.DATA_EVENTO);
+        Cursor cursor = db.query(RegistroPontoType.REGISTRO_PONTO_TABLE, null, null, null, null, null, RegistroPontoType.DATA_EVENTO);
 
         if (cursor.moveToFirst()) {
             do {

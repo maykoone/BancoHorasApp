@@ -118,7 +118,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         ControleDatabaseHelper db = new ControleDatabaseHelper(getApplicationContext());
         db.addRegistroPonto(registroPonto);
         ListTimeRecordsFragment currentFragment = (ListTimeRecordsFragment) mSectionsPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
-        currentFragment.notifyUpdate();
+        currentFragment.notifyUpdate(registroPonto);
 //        currentFragment.notifyUpdate();
     }
 
@@ -129,7 +129,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         ControleDatabaseHelper db = new ControleDatabaseHelper(getApplicationContext());
         db.updateRegistroPonto(registroPonto);
         ListTimeRecordsFragment currentFragment = (ListTimeRecordsFragment) mSectionsPagerAdapter.getRegisteredFragment(mViewPager.getCurrentItem());
-        currentFragment.notifyUpdate();
+        currentFragment.notifyUpdate(registroPonto);
 //        currentFragment.notifyUpdate();
     }
 

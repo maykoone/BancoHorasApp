@@ -13,7 +13,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/holo_green_dark"
+        android:background="@color/teal"
+        android:elevation="2dp"
         android:paddingBottom="@dimen/footer_bottom_padding"
         android:paddingTop="@dimen/footer_top_padding">
 
@@ -26,7 +27,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/label_foot_total" />
+            android:text="@string/label_foot_total"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/tv_total_time"
@@ -34,6 +36,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5sp"
+            android:textColor="@android:color/white"
             android:textStyle="bold" />
     </LinearLayout>
 

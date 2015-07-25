@@ -39,13 +39,15 @@ public class ListTimeRecordsFragment extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
 
-    private ArrayAdapter<RegistroPontoEntity> adapter;
+    private ArrayAdapter<RegistroPontoEntity> listAdapter;
+    private List<RegistroPontoEntity> registrosPontosList;
+    private ListView listView;
+
     private String totalTime;
     private TextView tvTotalTime;
 
     private ActionMode currentActionMode;
     private int mSelectedItem;
-
     private ActionMode.Callback modelCallback = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -63,7 +65,7 @@ public class ListTimeRecordsFragment extends Fragment {
         public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.action_item_edit:
-                    RegistroPontoEntity rEdit = adapter.getItem(mSelectedItem);
+                    RegistroPontoEntity rEdit = listAdapter.getItem(mSelectedItem);
                     DialogFragment fragment = new TimePickerDialogFragment();
                     Bundle args = new Bundle();
                     args.putString(TimePickerDialogFragment.TIME_TO_EDIT, rEdit.getDataEvento());
@@ -73,9 +75,9 @@ public class ListTimeRecordsFragment extends Fragment {
                     actionMode.finish();
                     return true;
                 case R.id.action_item_remove:
-                    RegistroPontoEntity rDelete = adapter.getItem(mSelectedItem);
+                    RegistroPontoEntity rDelete = listAdapter.getItem(mSelectedItem);
                     new ControleDatabaseHelper(getActivity().getApplicationContext()).deleteRegistroPonto(rDelete);
-                    adapter.remove(rDelete);
+                    listAdapter.remove(rDelete);
                     Toast.makeText(getActivity(), "Removendo: " + rDelete, Toast.LENGTH_LONG).show();
                     populateListAdapater();
                     actionMode.finish();
@@ -90,6 +92,7 @@ public class ListTimeRecordsFragment extends Fragment {
             mSelectedItem = -1;
         }
     };
+    private ControleDatabaseHelper mDbHelper;
 
     public ListTimeRecordsFragment() {
     }
@@ -108,43 +111,43 @@ public class ListTimeRecordsFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(ListTimeRecordsFragment.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
-//            adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, list);
-        adapter = new CustomArrayAdapter(getActivity(), new ArrayList<RegistroPontoEntity>());
+        listAdapter = new CustomArrayAdapter(getActivity(), new ArrayList<RegistroPontoEntity>());
+        mDbHelper = new ControleDatabaseHelper(getActivity().getApplicationContext());
         populateListAdapater();
-    }
+        totalTime = "00:00";
 
-    private void populateListAdapater() {
-        ControleDatabaseHelper db = new ControleDatabaseHelper(getActivity().getApplicationContext());
-        List<RegistroPontoEntity> list = db.getAllRegistrosPonto();
-        totalTime = formatTime(calculeTime(list));
+        //Create a handler for update a text view each minute
         final Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            List<RegistroPontoEntity> l;
-
-            Runnable setList(List<RegistroPontoEntity> l) {
-                this.l = l;
-                return this;
-            }
+        h.post(new Runnable() {
 
             @Override
             public void run() {
                 Log.i("Runnable Count Time ", totalTime);
-                totalTime = formatTime(calculeTime(l));
-                tvTotalTime.setText(totalTime);
-                h.postDelayed(this, 60000);
+                if (registrosPontosList != null && !(registrosPontosList.size() % 2 == 0)) {
+                    updateTotalTime(registrosPontosList);
+                }
+                h.postDelayed(this, 20000);
             }
-        }.setList(list), 60000);
+        });
+    }
 
-        adapter.clear();
-        adapter.addAll(list);
+    private void populateListAdapater() {
+        registrosPontosList = mDbHelper.getAllRegistrosPonto();
+        updateTotalTime(registrosPontosList);
+
+        listAdapter.clear();
+        listAdapter.addAll(registrosPontosList);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(ListTimeRecordsFragment.class.getName(), "onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.main_list_view);
+        listView = (ListView) rootView.findViewById(R.id.main_list_view);
+        listView.setAdapter(listAdapter);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -160,15 +163,21 @@ public class ListTimeRecordsFragment extends Fragment {
         });
         tvTotalTime = (TextView) rootView.findViewById(R.id.tv_total_time);
         tvTotalTime.setText(totalTime);
-        listView.setAdapter(adapter);
-//            listView.addFooterView(tv);
+
         return rootView;
     }
 
-    public void notifyUpdate() {
+    public void notifyUpdate(RegistroPontoEntity e) {
         populateListAdapater();
-        tvTotalTime.setText(totalTime);
-//            adapter.notifyDataSetChanged();
+//        tvTotalTime.setText(totalTime);
+//            listAdapter.notifyDataSetChanged();
+    }
+
+    private void updateTotalTime(List<RegistroPontoEntity> registros) {
+        totalTime = formatTime(calculeTime(registrosPontosList));
+        if (tvTotalTime != null) {
+            tvTotalTime.setText(totalTime);
+        }
     }
 
     private long calculeTime(List<RegistroPontoEntity> registros) {

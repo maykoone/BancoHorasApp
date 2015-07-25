@@ -3,19 +3,36 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <!--<item name="android:actionBarStyle">@style/CustomActionBar</item>-->
-        <!--<item name="actionBarStyle">@style/CustomActionBar</item>-->
-        <!--<item name="android:actionBarTabTextStyle">@style/CustomTabs</item>-->
+        <item name="android:actionBarStyle">@style/CustomActionBar</item>
+        <item name="actionBarStyle">@style/CustomActionBar</item>
+        <item name="android:actionBarTabBarStyle">@style/CustomTabs</item>
+        <item name="actionBarTabBarStyle">@style/CustomTabs</item>
+        <item name="android:actionBarTabTextStyle">@style/CustomTabText</item>
+        <item name="actionBarTabTextStyle">@style/CustomTabText</item>
+        <!--<item name="android:actionBarTabStyle">@style/CustomTabView</item>-->
+        <!--<item name="actionBarTabStyle">@style/CustomTabView</item>-->
     </style>
 
     <style name="CustomActionBar" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@android:color/holo_blue_dark</item>
-        <item name="background">@android:color/holo_blue_dark</item>
+        <item name="android:background">@color/teal</item>
+        <item name="background">@color/teal</item>
     </style>
 
-    <style name="CustomTabs" parent="Widget.AppCompat.ActionBar.TabText">
-        <item name="android:background">@android:color/holo_blue_dark</item>
-        <item name="background">@android:color/holo_blue_dark</item>
+    <style name="CustomTabs" parent="Widget.AppCompat.ActionBar.TabBar">
+        <item name="android:background">@color/grey</item>
+        <item name="background">@color/grey</item>
+        <!--<item name="android:textColor">@color/teal</item>-->
     </style>
+
+    <style name="CustomTabText" parent="Widget.AppCompat.ActionBar.TabText">
+        <item name="android:textColor">@color/teal</item>
+        <!--<item name="textColor">@color/teal</item>-->
+    </style>
+
+    <!--<style name="CustomTabView" parent="Widget.AppCompat.ActionBar.TabView">-->
+    <!--<item name="android:background">@color/teal</item>-->
+    <!--<item name="background">@color/teal</item>-->
+    <!--</style>-->
+
 
 </resources>
