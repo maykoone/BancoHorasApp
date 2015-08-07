@@ -8,24 +8,24 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$PlaceholderFragment">
 
-    <LinearLayout
+    <GridLayout
         android:id="@+id/footview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/teal"
-        android:elevation="2dp"
+        android:columnCount="2"
         android:paddingBottom="@dimen/footer_bottom_padding"
-        android:paddingTop="@dimen/footer_top_padding">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_clock" />
+        android:paddingLeft="@dimen/fragment_horizontal_padding"
+        android:paddingRight="@dimen/fragment_horizontal_padding"
+        android:paddingTop="@dimen/footer_top_padding"
+        android:rowCount="2">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="0"
             android:gravity="center"
             android:text="@string/label_foot_total"
             android:textColor="@android:color/white" />
@@ -35,10 +35,34 @@
             style="@android:style/TextAppearance.DeviceDefault.Large"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_column="1"
             android:layout_marginLeft="5sp"
+            android:layout_row="0"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
-    </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:gravity="center"
+            android:text="@string/label.counttime"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/tv_count_time"
+            style="@android:style/TextAppearance.DeviceDefault.Large"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_marginLeft="5sp"
+            android:layout_row="1"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+    </GridLayout>
 
 
     <ListView
@@ -46,7 +70,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/footview"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:listSelector="@drawable/listview_selector" />
 
 
 </RelativeLayout>

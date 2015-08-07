@@ -42,6 +42,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+//        actionBar.setElevation(5.0f);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.

@@ -43,8 +43,11 @@ public class ListTimeRecordsFragment extends Fragment {
     private List<RegistroPontoEntity> registrosPontosList;
     private ListView listView;
 
-    private String totalTime;
+    private String formattedTotalTime;
     private TextView tvTotalTime;
+
+    private String formattedCountTime;
+    private TextView tvCountTime;
 
     private ActionMode currentActionMode;
     private int mSelectedItem;
@@ -116,7 +119,7 @@ public class ListTimeRecordsFragment extends Fragment {
         listAdapter = new CustomArrayAdapter(getActivity(), new ArrayList<RegistroPontoEntity>());
         mDbHelper = new ControleDatabaseHelper(getActivity().getApplicationContext());
         populateListAdapater();
-        totalTime = "00:00";
+        formattedTotalTime = "00:00";
 
         //Create a handler for update a text view each minute
         final Handler h = new Handler();
@@ -124,7 +127,7 @@ public class ListTimeRecordsFragment extends Fragment {
 
             @Override
             public void run() {
-                Log.i("Runnable Count Time ", totalTime);
+                Log.i("Runnable Count Time ", formattedTotalTime);
                 if (registrosPontosList != null && !(registrosPontosList.size() % 2 == 0)) {
                     updateTotalTime(registrosPontosList);
                 }
@@ -134,7 +137,7 @@ public class ListTimeRecordsFragment extends Fragment {
     }
 
     private void populateListAdapater() {
-        registrosPontosList = mDbHelper.getAllRegistrosPonto();
+        registrosPontosList = mDbHelper.getAllRegistrosPontoForToday();
         updateTotalTime(registrosPontosList);
 
         listAdapter.clear();
@@ -162,44 +165,53 @@ public class ListTimeRecordsFragment extends Fragment {
             }
         });
         tvTotalTime = (TextView) rootView.findViewById(R.id.tv_total_time);
-        tvTotalTime.setText(totalTime);
+        tvTotalTime.setText(formattedTotalTime);
+
+        tvCountTime = (TextView) rootView.findViewById(R.id.tv_count_time);
+        tvCountTime.setText(formattedCountTime);
 
         return rootView;
     }
 
     public void notifyUpdate(RegistroPontoEntity e) {
         populateListAdapater();
-//        tvTotalTime.setText(totalTime);
+//        tvTotalTime.setText(formattedTotalTime);
 //            listAdapter.notifyDataSetChanged();
     }
 
     private void updateTotalTime(List<RegistroPontoEntity> registros) {
-        totalTime = formatTime(calculeTime(registrosPontosList));
+        long totalTimeMillis = calculeTime(registrosPontosList);
+        formattedTotalTime = formatTime(totalTimeMillis);
+        formattedCountTime = formatTime(totalTimeMillis - (8 * 60 * 60 * 1000));//8 hours
         if (tvTotalTime != null) {
-            tvTotalTime.setText(totalTime);
+            tvTotalTime.setText(formattedTotalTime);
+        }
+        if (tvCountTime != null) {
+            tvCountTime.setText(formattedCountTime);
         }
     }
 
     private long calculeTime(List<RegistroPontoEntity> registros) {
-        long totalTime = 0;
+        long totalTimeMillis = 0;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Iterator<RegistroPontoEntity> it = registros.iterator();
         while (it.hasNext()) {
             try {
                 Date dataRegistroInicio = sdf.parse(it.next().getDataEvento());
                 Date dataRegistroFinal = it.hasNext() ? sdf.parse(it.next().getDataEvento()) : new Date();
-                totalTime += dataRegistroFinal.getTime() - dataRegistroInicio.getTime();
+                totalTimeMillis += dataRegistroFinal.getTime() - dataRegistroInicio.getTime();
             } catch (ParseException e) {
                 Log.e("calculeTime", e.getMessage());
             }
         }
 
-        return totalTime;
+        return totalTimeMillis;
     }
 
     private String formatTime(long time) {
-        long diffMinutes = time / (60 * 1000) % 60;
-        long diffHours = time / (60 * 60 * 1000) % 24;
-        return String.format("%02d:%02d", diffHours, diffMinutes);
+        long diffMinutes = Math.abs(time) / (60 * 1000) % 60;
+        long diffHours = Math.abs(time) / (60 * 60 * 1000) % 24;
+        String timeFormatted = String.format("%02d:%02d", diffHours, diffMinutes);
+        return time < 0 ? "-" + timeFormatted : timeFormatted;
     }
 }
