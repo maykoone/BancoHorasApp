@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import java.util.Locale;
 
+import br.com.maykoone.app.bancohoras.fragments.ListMonthTimeRecordsFragment;
 import br.com.maykoone.app.bancohoras.fragments.ListTimeRecordsFragment;
 
 /**
@@ -29,7 +30,15 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a ListTimeRecordsFragment (defined as a static inner class below).
-        return ListTimeRecordsFragment.newInstance(position + 1);
+        switch (position) {
+            case TAB_TODAY:
+                return ListTimeRecordsFragment.newInstance(position + 1);
+            case TAB_MONTH:
+                return new ListMonthTimeRecordsFragment();
+            default:
+                return ListTimeRecordsFragment.newInstance(position + 1);
+        }
+
     }
 
     @Override

@@ -148,7 +148,7 @@ public class ListTimeRecordsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(ListTimeRecordsFragment.class.getName(), "onCreateView");
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.list_today_time_records_fragment, container, false);
         listView = (ListView) rootView.findViewById(R.id.main_list_view);
         listView.setAdapter(listAdapter);
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -164,6 +164,7 @@ public class ListTimeRecordsFragment extends Fragment {
                 return true;
             }
         });
+
         tvTotalTime = (TextView) rootView.findViewById(R.id.tv_total_time);
         tvTotalTime.setText(formattedTotalTime);
 

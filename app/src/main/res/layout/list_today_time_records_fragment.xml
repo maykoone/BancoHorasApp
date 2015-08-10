@@ -15,6 +15,7 @@
         android:layout_alignParentBottom="true"
         android:background="@color/teal"
         android:columnCount="2"
+        android:focusableInTouchMode="true"
         android:paddingBottom="@dimen/footer_bottom_padding"
         android:paddingLeft="@dimen/fragment_horizontal_padding"
         android:paddingRight="@dimen/fragment_horizontal_padding"

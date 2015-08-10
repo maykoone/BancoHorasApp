@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,34 @@ public class ControleDatabaseHelper extends SQLiteOpenHelper {
 
         String query = "SELECT * FROM " + RegistroPontoType.REGISTRO_PONTO_TABLE + " WHERE DATE(" + RegistroPontoType.DATA_EVENTO + ")= " +
                 "DATE('now','localtime') ORDER BY " + RegistroPontoType.DATA_EVENTO;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String dataEvento = cursor.getString(1);
+                int id = cursor.getInt(0);
+                result.add(new RegistroPontoEntity(id, dataEvento));
+            } while (cursor.moveToNext());
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
+        return result;
+    }
+
+    public List<RegistroPontoEntity> getAllRegistrosPontoByMonthAndYear(int month, int year) {
+        List<RegistroPontoEntity> result = new ArrayList<>();
+
+        String query = "SELECT * FROM " + RegistroPontoType.REGISTRO_PONTO_TABLE
+                + " WHERE strftime('%m', " + RegistroPontoType.DATA_EVENTO + ") = '08'"
+                + " AND strftime('%Y', " + RegistroPontoType.DATA_EVENTO + ") = '2015'"
+                + " ORDER BY " + RegistroPontoType.DATA_EVENTO;
+
+        Log.i("QUERY", query);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
