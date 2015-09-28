@@ -9,6 +9,10 @@
         <item name="actionBarTabBarStyle">@style/CustomTabs</item>
         <item name="android:actionBarTabTextStyle">@style/CustomTabText</item>
         <item name="actionBarTabTextStyle">@style/CustomTabText</item>
+        <item name="android:dropDownListViewStyle">@style/CustomDropDown</item>
+        <item name="dropDownListViewStyle">@style/CustomDropDown</item>
+        <item name="android:spinnerStyle">@style/CustomSpinner</item>
+        <item name="spinnerStyle">@style/CustomSpinner</item>
         <!--<item name="android:actionBarTabStyle">@style/CustomTabView</item>-->
         <!--<item name="actionBarTabStyle">@style/CustomTabView</item>-->
     </style>
@@ -31,6 +35,16 @@
     <style name="CustomTabText" parent="Widget.AppCompat.ActionBar.TabText">
         <item name="android:textColor">@color/teal</item>
         <!--<item name="textColor">@color/teal</item>-->
+    </style>
+    
+    <style name="CustomDropDown" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:divider">@android:color/darker_gray</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
+
+    <style name="CustomSpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:divider">@android:color/darker_gray</item>
+        <item name="android:dividerHeight">1dp</item>
     </style>
 
     <!--<style name="CustomTabView" parent="Widget.AppCompat.ActionBar.TabView">-->

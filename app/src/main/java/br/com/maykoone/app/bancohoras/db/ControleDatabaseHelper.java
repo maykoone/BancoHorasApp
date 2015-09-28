@@ -7,8 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import br.com.maykoone.app.bancohoras.db.ControleDatabase.RegistroPontoType;
 
@@ -81,10 +85,11 @@ public class ControleDatabaseHelper extends SQLiteOpenHelper {
 
     public List<RegistroPontoEntity> getAllRegistrosPontoByMonthAndYear(int month, int year) {
         List<RegistroPontoEntity> result = new ArrayList<>();
+        String monthStr = String.format("%02d", month);
 
         String query = "SELECT * FROM " + RegistroPontoType.REGISTRO_PONTO_TABLE
-                + " WHERE strftime('%m', " + RegistroPontoType.DATA_EVENTO + ") = '08'"
-                + " AND strftime('%Y', " + RegistroPontoType.DATA_EVENTO + ") = '2015'"
+                + " WHERE strftime('%m', " + RegistroPontoType.DATA_EVENTO + ") = '" + monthStr + "'"
+                + " AND strftime('%Y', " + RegistroPontoType.DATA_EVENTO + ") = '" + year + "'"
                 + " ORDER BY " + RegistroPontoType.DATA_EVENTO;
 
         Log.i("QUERY", query);
@@ -97,6 +102,35 @@ public class ControleDatabaseHelper extends SQLiteOpenHelper {
                 String dataEvento = cursor.getString(1);
                 int id = cursor.getInt(0);
                 result.add(new RegistroPontoEntity(id, dataEvento));
+            } while (cursor.moveToNext());
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+        db.close();
+        return result;
+    }
+
+    public Set<String> getDistinctMonths() throws ParseException {
+        Set<String> result = new HashSet<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-yyyy");
+        SimpleDateFormat sdfLong = new SimpleDateFormat("MMM yyyy");
+
+        String query = "SELECT DISTINCT strftime('%m'," + RegistroPontoType.DATA_EVENTO + " ),"
+                + "strftime('%Y'," + RegistroPontoType.DATA_EVENTO + " ) FROM "
+                + RegistroPontoType.REGISTRO_PONTO_TABLE;
+
+        Log.i("QUERY", query);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String month = cursor.getString(0);
+                String year = cursor.getString(1);
+                result.add(sdfLong.format(sdf.parse(month + "-" + year)));
             } while (cursor.moveToNext());
         }
 

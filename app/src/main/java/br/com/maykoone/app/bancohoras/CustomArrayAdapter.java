@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import br.com.maykoone.app.bancohoras.db.RegistroPontoEntity;
@@ -23,11 +24,13 @@ public class CustomArrayAdapter extends ArrayAdapter<RegistroPontoEntity> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         RegistroPontoEntity item = getItem(position);
+        SimpleDateFormat defaultFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.listview_custom_item, parent, false);
         }
         TextView tv = (TextView) convertView.findViewById(R.id.textview);
+
         tv.setText(item.getDataEvento());
         ImageView iv = (ImageView) convertView.findViewById(R.id.imageview);
 

@@ -17,17 +17,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import br.com.maykoone.app.bancohoras.CustomArrayAdapter;
 import br.com.maykoone.app.bancohoras.R;
 import br.com.maykoone.app.bancohoras.db.ControleDatabaseHelper;
 import br.com.maykoone.app.bancohoras.db.RegistroPontoEntity;
+
+import static br.com.maykoone.app.bancohoras.Util.calculeTime;
+import static br.com.maykoone.app.bancohoras.Util.formatTime;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -40,7 +39,7 @@ public class ListTimeRecordsFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private ArrayAdapter<RegistroPontoEntity> listAdapter;
-    private List<RegistroPontoEntity> registrosPontosList;
+    private List<RegistroPontoEntity> mRegistrosPontosList;
     private ListView listView;
 
     private String formattedTotalTime;
@@ -128,8 +127,8 @@ public class ListTimeRecordsFragment extends Fragment {
             @Override
             public void run() {
                 Log.i("Runnable Count Time ", formattedTotalTime);
-                if (registrosPontosList != null && !(registrosPontosList.size() % 2 == 0)) {
-                    updateTotalTime(registrosPontosList);
+                if (mRegistrosPontosList != null && !(mRegistrosPontosList.size() % 2 == 0)) {
+                    updateTotalTime();
                 }
                 h.postDelayed(this, 20000);
             }
@@ -137,11 +136,11 @@ public class ListTimeRecordsFragment extends Fragment {
     }
 
     private void populateListAdapater() {
-        registrosPontosList = mDbHelper.getAllRegistrosPontoForToday();
-        updateTotalTime(registrosPontosList);
+        mRegistrosPontosList = mDbHelper.getAllRegistrosPontoForToday();
+        updateTotalTime();
 
         listAdapter.clear();
-        listAdapter.addAll(registrosPontosList);
+        listAdapter.addAll(mRegistrosPontosList);
     }
 
     @Override
@@ -180,8 +179,8 @@ public class ListTimeRecordsFragment extends Fragment {
 //            listAdapter.notifyDataSetChanged();
     }
 
-    private void updateTotalTime(List<RegistroPontoEntity> registros) {
-        long totalTimeMillis = calculeTime(registrosPontosList);
+    private void updateTotalTime() {
+        long totalTimeMillis = calculeTime(mRegistrosPontosList);
         formattedTotalTime = formatTime(totalTimeMillis);
         formattedCountTime = formatTime(totalTimeMillis - (8 * 60 * 60 * 1000));//8 hours
         if (tvTotalTime != null) {
@@ -192,27 +191,4 @@ public class ListTimeRecordsFragment extends Fragment {
         }
     }
 
-    private long calculeTime(List<RegistroPontoEntity> registros) {
-        long totalTimeMillis = 0;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Iterator<RegistroPontoEntity> it = registros.iterator();
-        while (it.hasNext()) {
-            try {
-                Date dataRegistroInicio = sdf.parse(it.next().getDataEvento());
-                Date dataRegistroFinal = it.hasNext() ? sdf.parse(it.next().getDataEvento()) : new Date();
-                totalTimeMillis += dataRegistroFinal.getTime() - dataRegistroInicio.getTime();
-            } catch (ParseException e) {
-                Log.e("calculeTime", e.getMessage());
-            }
-        }
-
-        return totalTimeMillis;
-    }
-
-    private String formatTime(long time) {
-        long diffMinutes = Math.abs(time) / (60 * 1000) % 60;
-        long diffHours = Math.abs(time) / (60 * 60 * 1000) % 24;
-        String timeFormatted = String.format("%02d:%02d", diffHours, diffMinutes);
-        return time < 0 ? "-" + timeFormatted : timeFormatted;
-    }
 }
