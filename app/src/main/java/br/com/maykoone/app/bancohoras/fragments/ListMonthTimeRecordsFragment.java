@@ -118,8 +118,7 @@ public class ListMonthTimeRecordsFragment extends Fragment {
             month = c.get(Calendar.MONTH) + 1;
             year = c.get(Calendar.YEAR);
         }
-        List<RegistroPontoEntity> result = mDbHelper.getAllRegistrosPontoByMonthAndYear(month, year);
-        updateTotalTime(result);
+        List<RegistroPontoEntity> result = mDbHelper.getAllRegistrosPontoByMonthAndYear(month, year);        
         Map<String, List<RegistroPontoEntity>> groupByDayOfMonth = new HashMap<>();
 
         for (RegistroPontoEntity r : result) {
@@ -133,15 +132,26 @@ public class ListMonthTimeRecordsFragment extends Fragment {
                 groupByDayOfMonth.put(timeParts[0], timeList);
             }
         }
+        updateTotalTime(groupByDayOfMonth);
         mListChildren = groupByDayOfMonth;
         mListGroup = new ArrayList<>(groupByDayOfMonth.keySet());
         Collections.sort(mListGroup, Collections.reverseOrder());
     }
 
-    private void updateTotalTime(List<RegistroPontoEntity> registros) {
-        long totalTimeMillis = calculeTime(registros);
+    private void updateTotalTime(Map<String, List<RegistroPontoEntity>> registros) {
+        long totalTimeMillis = 0;
+        long saldoTimeMillis = 0;
+        //calcula o total e saldo dos registros por dia e soma os resultados finais
+        for (Map.Entry<String, List<RegistroPontoEntity>> entry : registros.entrySet()) {
+            List<RegistroPontoEntity> registrosDia = entry.getValue();
+            long totalTimeMillisDay = calculeTime(registrosDia);
+            long saldoTimeMillisDay = totalTimeMillisDay - (8 * 60 * 60 * 1000);//8 hours
+            totalTimeMillis += totalTimeMillisDay;
+            saldoTimeMillis += saldoTimeMillisDay;
+        }
+        
         formattedTotalTime = formatTime(totalTimeMillis);
-        formattedCountTime = formatTime(totalTimeMillis - (8 * 60 * 60 * 1000));//8 hours
+        formattedCountTime = formatTime(saldoTimeMillis);
         if (tvTotalTime != null) {
             tvTotalTime.setText(formattedTotalTime);
         }
